@@ -1,6 +1,8 @@
 package algorithm.tree.binaryTree;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 @SuppressWarnings("unchecked")
 public class BinarySearchTree<E> {
@@ -278,7 +280,6 @@ public class BinarySearchTree<E> {
     }
 
 
-
     public void printBST(String mode) {
         if (PRE.equalsIgnoreCase(mode)) {
             prePrintTraverse(root);
@@ -292,7 +293,6 @@ public class BinarySearchTree<E> {
             throw new IllegalArgumentException("No Such Ways To Traverse!");
         }
     }
-
 
 
     private void levelPrintTraverse(Node<E> node) {
@@ -350,23 +350,70 @@ public class BinarySearchTree<E> {
 
 
     public void invertBinaryTree() {
-        if (root==null) return;
-        Queue<Node<E>> que =new LinkedList<>();
+        if (root == null) return;
+        Queue<Node<E>> que = new LinkedList<>();
         que.offer(root);
 
-        while (!que.isEmpty()){
+        while (!que.isEmpty()) {
             Node<E> temp;
             Node<E> pop = que.poll();
-            temp=pop.leftChild;
-            pop.leftChild=pop.rightChild;
-            pop.rightChild=temp;
+            temp = pop.leftChild;
+            pop.leftChild = pop.rightChild;
+            pop.rightChild = temp;
             System.out.println(pop.element);
-            if (pop.leftChild!=null){
+            if (pop.leftChild != null) {
                 que.offer(pop.leftChild);
             }
-            if (pop.rightChild!=null){
+            if (pop.rightChild != null) {
                 que.offer(pop.rightChild);
             }
         }
     }
+
+    /**
+     * 1.前驱节点：按照中序遍历时的前一个节点。此时对于BST来说，遍历顺序即是升序排列顺序
+     * 2.对于所有树，如果左子树不为空，那么前驱节点肯定该节点的左节点的右子节点，右子节点，右子节点，...
+     * 直到右子节点为空
+     * 3.如果左子树为空，那么前驱节点，肯定是父节点的父节点，父节点，父节点...
+     * 直到该节点是父节点的右子树
+     * 4.如果节点的左子节点为空，并且父节点为空，
+     * 那么此时节点为根节点，并且无前驱节点
+     *
+     * @param node
+     * @return
+     */
+    public Node<E> predecessor(Node<E> node) {
+        if (node == null) return null;
+        if (node.leftChild != null) {
+            node = node.leftChild;
+            while (node.rightChild != null) {
+                node = node.rightChild;
+            }
+            return node;
+        } else {
+            while (node.parent!=null&&node!= node.parent.rightChild) {
+                node = node.parent;
+            }
+            //上述循环退出时，要么是Node.parent为空，那么就说明是根节点，没有前驱节点
+            //否则的话，应该就是Node.parent是它的前驱节点
+            return node.parent;
+        }
+    }
+
+
+    /**
+     * 后继节点：
+     * 1.如果node.right!=null, 那么node.right.left.left....,直到left为空
+     * 2.如果node.right==null（比如是左子树的右节点）, 那么是node.parent.parent.parent。。。。直到是parent的左子节点
+     * 3. 如果node.right==null 并且node.parent==null，那么则是根节点
+     *
+     * @param node
+     * @return
+     */
+    private Node<E> successor(Node<E> node){
+
+        return  null;
+    }
+
+
 }
